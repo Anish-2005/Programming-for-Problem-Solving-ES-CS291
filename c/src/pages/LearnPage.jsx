@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FiCode, FiBookOpen, FiCpu, FiDatabase, FiSave, FiTerminal, FiHome } from 'react-icons/fi';
+import { FiCode, FiBookOpen, FiCpu, FiDatabase, FiSave, FiTerminal, FiHome,FiChip } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 
 const concepts = [
