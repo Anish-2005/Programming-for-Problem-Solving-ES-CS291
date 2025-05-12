@@ -41,7 +41,7 @@ const problemSchema = new mongoose.Schema({
 
 const cAssignmentSchema = new mongoose.Schema({
   title: String,
-  icon: { type: String, default: 'FaCuttlefish' },
+  icon: { type: String, default: 'FiTerminal' }, // Default icon as string
   problems: [problemSchema],
   createdAt: { type: Date, default: Date.now }
 });
@@ -81,7 +81,10 @@ router.route('/c-assignments')
       return { question, code, output };
     });
 
-    const newAssignment = new CAssignment({ title, icon: icon || 'FaCuttlefish', problems: validProblems });
+    // Ensure the icon is a string and set to default if not provided
+    const validIcon = typeof icon === 'string' ? icon : 'FiTerminal';
+
+    const newAssignment = new CAssignment({ title, icon: validIcon, problems: validProblems });
     const saved = await newAssignment.save();
     respond.success(res, saved, 201);
   }));
@@ -94,10 +97,13 @@ router.route('/c-assignments/:id')
   }))
   .put(asyncHandler(async (req, res) => {
     const { title, problems, icon } = req.body;
-
+    
+    // Ensure the icon is a string and set to default if not provided
+    const validIcon = typeof icon === 'string' ? icon : 'FiTerminal';
+    
     const updated = await CAssignment.findByIdAndUpdate(
       req.params.id,
-      { title, problems, icon },
+      { title, problems, icon: validIcon },
       { new: true, runValidators: true }
     ).lean();
 
@@ -106,6 +112,11 @@ router.route('/c-assignments/:id')
   }))
   .patch(asyncHandler(async (req, res) => {
     const updateFields = req.body;
+    
+    // Ensure the icon is a string and set to default if not provided
+    if (updateFields.icon && typeof updateFields.icon !== 'string') {
+      updateFields.icon = 'FiTerminal';
+    }
 
     const updated = await CAssignment.findByIdAndUpdate(
       req.params.id,
