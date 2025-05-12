@@ -1,18 +1,20 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
+import React,{ useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
+import {
   FiTerminal, FiCpu, FiCode, FiServer, FiLock, FiBookOpen,
   FiHome, FiX, FiClipboard, FiTrash2, FiPlus, FiFolder,
   FiActivity, FiGrid, FiArchive, FiBox, FiGitlab, FiArrowUp,
-  FiArrowDown, FiLink, FiRefreshCw, FiFileText, FiAlertTriangle,FiChevronRight
+  FiArrowDown, FiLink, FiRefreshCw, FiFileText, FiAlertTriangle, FiChevronRight,
+  FiEdit2, FiSave
 } from 'react-icons/fi';
 
 const iconComponents = {
   FiTerminal, FiCpu, FiCode, FiServer, FiLock, FiBookOpen,
   FiHome, FiX, FiClipboard, FiTrash2, FiPlus, FiFolder,
   FiActivity, FiGrid, FiArchive, FiBox, FiGitlab, FiArrowUp,
-  FiArrowDown, FiLink, FiRefreshCw, FiFileText, FiAlertTriangle
+  FiArrowDown, FiLink, FiRefreshCw, FiFileText, FiAlertTriangle, FiEdit2, FiSave
 };
 
 export default function CLabsPage() {
@@ -24,25 +26,26 @@ export default function CLabsPage() {
   const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
-    icon: 'FiTerminal',
+    icon: 'FiTerminal', // Use the string name for the icon, not the component
     problems: [{ question: '', code: '', output: '' }]
   });
   const [pin, setPin] = useState('');
   const [pinVerified, setPinVerified] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const navigate = useNavigate();
   const HARDCODED_PIN = '1234';
 
   useEffect(() => {
     const fetchAssignments = async () => {
       try {
-        const response = await fetch('https://object-oriented-programming-cpp-lab.onrender.com/api/c-assignments');
+        const response = await fetch('https://c-programming.onrender.com/api/c-assignments');
         if (!response.ok) throw new Error('Failed to fetch assignments');
         const { data } = await response.json();
-        
+        // Ensure all assignments have an icon and it's a valid string
         const formatted = data.map(a => ({
           ...a,
-          icon: iconComponents[a.icon] || FiTerminal
+          icon: a.icon || 'FiTerminal' // Fallback to 'FiTerminal' if no icon is found
         }));
-        
         setAssignments(formatted);
         setError(null);
       } catch (err) {
@@ -66,6 +69,12 @@ export default function CLabsPage() {
     setShowAdminPanel(false);
     setPinVerified(false);
     setPin('');
+    setEditingId(null);
+    setFormData({
+      title: '',
+      icon: 'FiTerminal',
+      problems: [{ question: '', code: '', output: '' }]
+    });
   };
 
   const addProblemField = () => {
@@ -76,42 +85,58 @@ export default function CLabsPage() {
   };
 
   const handleProblemChange = (index, field, value) => {
-    const newProblems = formData.problems.map((p, i) => 
+    const newProblems = formData.problems.map((p, i) =>
       i === index ? { ...p, [field]: value } : p
     );
     setFormData(prev => ({ ...prev, problems: newProblems }));
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('https://object-oriented-programming-cpp-lab.onrender.com/api/c-assignments', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
+      let response;
+      // Ensure that the icon is always a string before sending it to the server
+      const payload = {
+        ...formData,
+        icon: typeof formData.icon === 'string' ? formData.icon : 'FiTerminal' // Default to 'FiTerminal'
+      };
+
+      if (editingId) {
+        response = await fetch(`https://c-programming.onrender.com/api/c-assignments/${editingId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      } else {
+        response = await fetch('https://c-programming.onrender.com/api/c-assignments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      }
 
       const { data } = await response.json();
-      
-      setAssignments(prev => [{
-        ...data,
-        icon: iconComponents[data.icon] || FiTerminal
-      }, ...prev]);
-      
-    } finally {
-      setShowAdminPanel(false);
-      setFormData({
-        title: '',
-        icon: 'FiTerminal',
-        problems: [{ question: '', code: '', output: '' }]
-      });
-      window.location.href = '/c-labs';
+      // Handle the server response and update assignments
+      if (editingId) {
+        setAssignments(prev => prev.map(a =>
+          a._id === editingId ? { ...data, icon: data.icon || 'FiTerminal' } : a
+        ));
+      } else {
+        setAssignments(prev => [{ ...data, icon: data.icon || 'FiTerminal' }, ...prev]);
+      }
+
+      handleCloseAdminPanel();
+      navigate('/c-labs');
+      window.location.reload(); // Reload the page after navigating
+
+    } catch (error) {
+      console.error('Error submitting assignment:', error);
     }
   };
 
+
   const handleDelete = async (id) => {
     try {
-      await fetch(`https://object-oriented-programming-cpp-lab.onrender.com/api/c-assignments/${id}`, {
+      await fetch(`https://c-programming.onrender.com/api/c-assignments/${id}`, {
         method: 'DELETE'
       });
       setAssignments(prev => prev.filter(a => a._id !== id));
@@ -120,6 +145,16 @@ export default function CLabsPage() {
     }
   };
 
+  const handleEdit = (assignment) => {
+    setEditingId(assignment._id);
+    setFormData({
+      title: assignment.title,
+      icon: assignment.icon || 'FiTerminal', // Ensure there's always an icon string
+      problems: assignment.problems
+    });
+    setShowAdminPanel(true);
+    setPinVerified(true);
+  };
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-cyan-50 flex items-center justify-center">
@@ -139,7 +174,7 @@ export default function CLabsPage() {
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-cyan-50 flex items-center justify-center p-4">
         <div className="text-center text-red-600">
           <p className="text-xl mb-4">Error: {error}</p>
-          <button 
+          <button
             onClick={() => window.location.reload()}
             className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg hover:from-cyan-400 hover:to-blue-400 shadow-md"
           >
@@ -160,12 +195,12 @@ export default function CLabsPage() {
         className="bg-white/80 backdrop-blur-lg border-b border-blue-200 p-4 sticky top-0 z-50 shadow-sm"
       >
         <div className="container mx-auto flex justify-between items-center">
-          <motion.div 
+          <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             <Link to="/" className="flex items-center gap-3">
-              <motion.div 
+              <motion.div
                 animate={{ rotate: [0, 10, -10, 0] }}
                 transition={{ duration: 2, repeat: Infinity }}
                 className="p-2 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500 shadow-md"
@@ -177,8 +212,8 @@ export default function CLabsPage() {
               </h1>
             </Link>
           </motion.div>
-          
-          <motion.div 
+
+          <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -215,7 +250,7 @@ export default function CLabsPage() {
         </motion.div>
 
         {/* Assignments Panel */}
-        <motion.div 
+        <motion.div
           className="mt-8 bg-white rounded-xl p-6 border border-blue-200 shadow-lg"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -224,11 +259,11 @@ export default function CLabsPage() {
             <FiCpu className="text-cyan-600 text-xl" />
             <h3 className="text-xl font-bold text-blue-800">Lab Assignments</h3>
           </div>
-          
+
           {/* Assignments Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {assignments.map((assignment) => {
-              const IconComponent = assignment.icon;
+              const IconComponent = iconComponents[assignment.icon]; // Ensure this is a valid React component
               return (
                 <motion.div
                   key={assignment._id}
@@ -242,8 +277,9 @@ export default function CLabsPage() {
                 >
                   <div className="bg-white p-6 rounded-xl border border-blue-200 hover:border-cyan-400 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-100 h-full flex flex-col">
                     <div className="text-4xl mb-4 text-cyan-600">
-                      <IconComponent />
+                      <IconComponent /> {/* Make sure you're passing a React component */}
                     </div>
+
                     <h3 className="text-xl font-semibold text-blue-800">
                       {assignment.title}
                     </h3>
@@ -256,6 +292,7 @@ export default function CLabsPage() {
                 </motion.div>
               );
             })}
+
           </div>
         </motion.div>
 
@@ -270,20 +307,20 @@ export default function CLabsPage() {
         </motion.button>
 
         {/* Assignment Details Modal */}
-        <AnimatePresence>
+         <AnimatePresence>
           {isPopupOpen && selectedAssignment && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 backdrop-blur-sm bg-black/50 flex items-center justify-center"
+              className="fixed inset-0 z-50 backdrop-blur-sm bg-black/50 flex items-center justify-center p-4"
               onClick={() => setIsPopupOpen(false)}
             >
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.8, opacity: 0 }}
-                className="bg-white rounded-xl border border-blue-200 w-full max-w-4xl max-h-[78vh] overflow-y-auto mx-4 shadow-2xl"
+                className="bg-white rounded-xl border border-blue-200 w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="p-8 relative">
@@ -296,7 +333,7 @@ export default function CLabsPage() {
 
                   <div className="flex items-center mb-8">
                     <div className="text-4xl text-cyan-600 mr-4">
-                      {selectedAssignment.icon}
+                      {React.createElement(iconComponents[selectedAssignment.icon] || FiTerminal)}
                     </div>
                     <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 to-blue-600">
                       {selectedAssignment.title}
@@ -407,8 +444,9 @@ export default function CLabsPage() {
                         <input
                           placeholder="Lab Assignment Title"
                           value={formData.title}
-                          onChange={(e) => setFormData({...formData, title: e.target.value})}
+                          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                           className="w-full p-2 bg-blue-50 rounded text-blue-800 focus:ring-2 focus:ring-cyan-400 border border-blue-200"
+                          required
                         />
                       </div>
 
@@ -416,7 +454,7 @@ export default function CLabsPage() {
                         <label className="text-sm font-medium text-blue-600">Icon</label>
                         <select
                           value={formData.icon}
-                          onChange={(e) => setFormData({...formData, icon: e.target.value})}
+                          onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
                           className="w-full p-2 bg-blue-50 rounded text-blue-800 focus:ring-2 focus:ring-cyan-400 border border-blue-200"
                         >
                           {Object.keys(iconComponents).map(icon => (
@@ -453,6 +491,7 @@ export default function CLabsPage() {
                                 onChange={(e) => handleProblemChange(index, 'question', e.target.value)}
                                 className="w-full p-2 bg-white rounded text-blue-800 focus:ring-2 focus:ring-cyan-400 border border-blue-200"
                                 rows="3"
+                                required
                               />
                               <textarea
                                 placeholder="Code Solution"
@@ -460,6 +499,7 @@ export default function CLabsPage() {
                                 onChange={(e) => handleProblemChange(index, 'code', e.target.value)}
                                 className="w-full p-2 bg-white rounded font-mono text-sm text-cyan-800 focus:ring-2 focus:ring-cyan-400 border border-blue-200"
                                 rows="6"
+                                required
                               />
                               <textarea
                                 placeholder="Expected Output"
@@ -467,6 +507,7 @@ export default function CLabsPage() {
                                 onChange={(e) => handleProblemChange(index, 'output', e.target.value)}
                                 className="w-full p-2 bg-white rounded text-blue-800 focus:ring-2 focus:ring-cyan-400 border border-blue-200"
                                 rows="2"
+                                required
                               />
                             </div>
                           </div>
@@ -485,9 +526,10 @@ export default function CLabsPage() {
                       <div className="grid grid-cols-2 gap-4">
                         <button
                           type="submit"
-                          className="px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white rounded-lg font-medium transition-colors shadow-md"
+                          className="px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white rounded-lg font-medium transition-colors shadow-md flex items-center justify-center gap-2"
                         >
-                          Create Lab Assignment
+                          {editingId ? <FiSave /> : <FiPlus />}
+                          {editingId ? 'Update Assignment' : 'Create Assignment'}
                         </button>
                         <button
                           type="button"
@@ -506,17 +548,27 @@ export default function CLabsPage() {
                       </h3>
                       <div className="space-y-2">
                         {assignments.map(assignment => (
-                          <div 
+                          <div
                             key={assignment._id}
                             className="flex justify-between items-center bg-blue-50 p-3 rounded-lg border border-blue-200"
                           >
                             <span className="text-blue-800">{assignment.title}</span>
-                            <button
-                              onClick={() => handleDelete(assignment._id)}
-                              className="p-2 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-full"
-                            >
-                              <FiTrash2 />
-                            </button>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => handleEdit(assignment)}
+                                className="p-2 text-cyan-500 hover:text-cyan-600 hover:bg-cyan-50 rounded-full"
+                                title="Edit"
+                              >
+                                <FiEdit2 />
+                              </button>
+                              <button
+                                onClick={() => handleDelete(assignment._id)}
+                                className="p-2 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-full"
+                                title="Delete"
+                              >
+                                <FiTrash2 />
+                              </button>
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -529,7 +581,7 @@ export default function CLabsPage() {
         </AnimatePresence>
 
         {/* Footer Note */}
-        <motion.footer 
+        <motion.footer
           className="mt-16 border-t border-blue-200 py-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
