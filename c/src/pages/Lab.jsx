@@ -33,12 +33,12 @@ export default function CLabsPage() {
   const [pinVerified, setPinVerified] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const navigate = useNavigate();
-  const HARDCODED_PIN = '1234';
+  const HARDCODED_PIN = import.meta.env.VITE_ADMIN_PIN;
 
   useEffect(() => {
     const fetchAssignments = async () => {
       try {
-        const response = await fetch('https://c-programming.onrender.com/api/c-assignments');
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/c-assignments`);
         if (!response.ok) throw new Error('Failed to fetch assignments');
         const { data } = await response.json();
         // Ensure all assignments have an icon and it's a valid string
@@ -101,13 +101,13 @@ export default function CLabsPage() {
       };
 
       if (editingId) {
-        response = await fetch(`https://c-programming.onrender.com/api/c-assignments/${editingId}`, {
+        response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/c-assignments/${editingId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
       } else {
-        response = await fetch('https://c-programming.onrender.com/api/c-assignments', {
+        response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/c-assignments`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -136,7 +136,7 @@ export default function CLabsPage() {
 
   const handleDelete = async (id) => {
     try {
-      await fetch(`https://c-programming.onrender.com/api/c-assignments/${id}`, {
+      await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/c-assignments/${id}`, {
         method: 'DELETE'
       });
       setAssignments(prev => prev.filter(a => a._id !== id));
