@@ -5,7 +5,7 @@ import {
   FiTerminal, FiCpu, FiCode, FiServer, FiLock, FiBookOpen,
   FiHome, FiX, FiClipboard, FiTrash2, FiPlus, FiFolder,
   FiActivity, FiGrid, FiArchive, FiBox, FiGitlab, FiArrowUp,
-  FiArrowDown, FiLink, FiRefreshCw, FiFileText, FiAlertTriangle
+  FiArrowDown, FiLink, FiRefreshCw, FiFileText, FiAlertTriangle,FiChevronRight
 } from 'react-icons/fi';
 
 const iconComponents = {
@@ -122,11 +122,11 @@ export default function CLabsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-indigo-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-cyan-50 flex items-center justify-center">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="text-4xl text-purple-400"
+          className="text-4xl text-cyan-600"
         >
           <FiTerminal />
         </motion.div>
@@ -136,12 +136,12 @@ export default function CLabsPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-indigo-900 flex items-center justify-center p-4">
-        <div className="text-center text-red-400">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-cyan-50 flex items-center justify-center p-4">
+        <div className="text-center text-red-600">
           <p className="text-xl mb-4">Error: {error}</p>
           <button 
             onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-indigo-600 rounded-lg hover:bg-indigo-700"
+            className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg hover:from-cyan-400 hover:to-blue-400 shadow-md"
           >
             Try Again
           </button>
@@ -151,41 +151,52 @@ export default function CLabsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-indigo-900 text-white">
-      {/* Circuit Board Background */}
-      <div className="fixed inset-0 overflow-hidden opacity-10">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTggMHY0TTggMTJ2NE0xNiA4aC00TTQgOGgtNE0xMiAxMmwyLTIgMiAyLTItMi0yIDJ6TTQgNGwyLTIgMiAyLTItMi0yIDJ6IiBzdHJva2U9IiMzMzMzMzMiIHN0cm9rZS13aWR0aD0iMSIvPjwvc3ZnPg==')]"></div>
-      </div>
-
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-cyan-50 text-blue-900">
       {/* Navigation */}
       <motion.nav
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="bg-gray-900/80 backdrop-blur-lg border-b border-indigo-700/50 p-4 sticky top-0 z-50"
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+        className="bg-white/80 backdrop-blur-lg border-b border-blue-200 p-4 sticky top-0 z-50 shadow-sm"
       >
         <div className="container mx-auto flex justify-between items-center">
-          <motion.div whileHover={{ scale: 1.05 }}>
+          <motion.div 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
             <Link to="/" className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-600">
+              <motion.div 
+                animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="p-2 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500 shadow-md"
+              >
                 <FiTerminal className="text-xl text-white" />
-              </div>
-              <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 to-purple-200">
+              </motion.div>
+              <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 to-blue-600">
                 C Programming Lab
               </h1>
             </Link>
           </motion.div>
           
-          <div className="flex gap-4">
-            <motion.div whileHover={{ y: -2 }}>
-              <Link
-                to="/"
-                className="px-4 py-2 rounded-lg bg-gray-800/50 hover:bg-gray-700/40 border border-indigo-700 flex items-center gap-2"
+          <motion.div 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Link
+              to="/"
+              className="px-4 py-2 rounded-lg bg-white hover:bg-blue-50 border border-blue-200 flex items-center gap-2 transition-all duration-300 hover:shadow-md text-blue-700"
+            >
+              <FiHome className="text-cyan-600" />
+              <span>Home</span>
+              <motion.span
+                animate={{ x: [0, 5, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="text-blue-500"
               >
-                <FiHome className="text-indigo-300" />
-                Home
-              </Link>
-            </motion.div>
-          </div>
+                <FiChevronRight />
+              </motion.span>
+            </Link>
+          </motion.div>
         </div>
       </motion.nav>
 
@@ -196,26 +207,26 @@ export default function CLabsPage() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-12 text-center"
         >
-          <h1 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 to-purple-200">
+          <h1 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 to-blue-600">
             <FiCode className="inline-block mr-4" />
             System Programming Labs
           </h1>
-          <p className="text-indigo-200 text-lg">Master low-level programming with memory management and hardware interaction</p>
+          <p className="text-blue-600 text-lg">Master low-level programming with memory management and hardware interaction</p>
         </motion.div>
 
-        {/* Hardware Panel */}
+        {/* Assignments Panel */}
         <motion.div 
-          className="mt-8 bg-gray-800/50 rounded-lg p-4 border border-indigo-700/50"
+          className="mt-8 bg-white rounded-xl p-6 border border-blue-200 shadow-lg"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
         >
-          <div className="flex items-center gap-3 mb-4">
-            <FiCpu className="text-indigo-400" />
-            <h3 className="font-mono text-gray-300">Lab Assignments</h3>
+          <div className="flex items-center gap-3 mb-6">
+            <FiCpu className="text-cyan-600 text-xl" />
+            <h3 className="text-xl font-bold text-blue-800">Lab Assignments</h3>
           </div>
           
           {/* Assignments Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {assignments.map((assignment) => {
               const IconComponent = assignment.icon;
               return (
@@ -229,15 +240,15 @@ export default function CLabsPage() {
                   whileHover={{ y: -5 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  <div className="bg-gray-900/50 backdrop-blur-sm p-6 rounded-xl border border-indigo-700/50 hover:border-purple-500/50 transition-all duration-500 hover:shadow-lg hover:shadow-indigo-500/20 h-full">
-                    <div className="text-4xl mb-4 text-purple-400">
+                  <div className="bg-white p-6 rounded-xl border border-blue-200 hover:border-cyan-400 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-100 h-full flex flex-col">
+                    <div className="text-4xl mb-4 text-cyan-600">
                       <IconComponent />
                     </div>
-                    <h3 className="text-xl font-semibold text-indigo-100">
+                    <h3 className="text-xl font-semibold text-blue-800">
                       {assignment.title}
                     </h3>
                     <div className="mt-4">
-                      <span className="text-indigo-300 text-sm">
+                      <span className="text-cyan-600 text-sm">
                         {assignment.problems.length} {assignment.problems.length > 1 ? 'Problems' : 'Problem'}
                       </span>
                     </div>
@@ -253,9 +264,9 @@ export default function CLabsPage() {
           onClick={() => setShowAdminPanel(true)}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="fixed bottom-8 right-8 p-4 bg-indigo-600 hover:bg-indigo-700 rounded-full shadow-xl z-[1000]"
+          className="fixed bottom-8 right-8 p-4 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full shadow-xl z-[1000] text-white"
         >
-          <FiLock className="text-2xl text-white" />
+          <FiLock className="text-2xl" />
         </motion.button>
 
         {/* Assignment Details Modal */}
@@ -265,63 +276,63 @@ export default function CLabsPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 backdrop-blur-md bg-black/50 flex items-center justify-center"
+              className="fixed inset-0 z-50 backdrop-blur-sm bg-black/50 flex items-center justify-center"
               onClick={() => setIsPopupOpen(false)}
             >
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.8, opacity: 0 }}
-                className="bg-gray-800/90 backdrop-blur-xl rounded-xl border border-purple-400/30 w-full max-w-4xl max-h-[78vh] overflow-y-auto mx-4"
+                className="bg-white rounded-xl border border-blue-200 w-full max-w-4xl max-h-[78vh] overflow-y-auto mx-4 shadow-2xl"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="p-8 relative">
                   <button
                     onClick={() => setIsPopupOpen(false)}
-                    className="absolute top-6 right-6 p-2 rounded-full hover:bg-gray-700/50 transition-colors"
+                    className="absolute top-6 right-6 p-2 rounded-full hover:bg-blue-50 transition-colors"
                   >
-                    <FiX className="text-xl text-purple-400" />
+                    <FiX className="text-xl text-blue-600" />
                   </button>
 
                   <div className="flex items-center mb-8">
-                    <div className="text-4xl text-purple-400 mr-4">
+                    <div className="text-4xl text-cyan-600 mr-4">
                       {selectedAssignment.icon}
                     </div>
-                    <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 to-purple-200">
+                    <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 to-blue-600">
                       {selectedAssignment.title}
                     </h2>
                   </div>
 
                   <div className="space-y-8">
                     {selectedAssignment.problems.map((problem, pIndex) => (
-                      <div key={pIndex} className="bg-gray-700/30 p-6 rounded-xl">
-                        <h4 className="text-xl font-medium text-indigo-100 mb-6">
+                      <div key={pIndex} className="bg-blue-50 p-6 rounded-xl border border-blue-200">
+                        <h4 className="text-xl font-medium text-blue-800 mb-6">
                           {problem.question}
                         </h4>
 
-                        <div className="bg-gray-900/80 rounded-xl overflow-hidden mb-6 relative">
-                          <div className="flex items-center bg-gray-800 px-4 py-3">
+                        <div className="bg-white rounded-xl overflow-hidden mb-6 relative border border-blue-200">
+                          <div className="flex items-center bg-blue-50 px-4 py-3 border-b border-blue-200">
                             <div className="flex space-x-2 mr-3">
                               <div className="w-3 h-3 rounded-full bg-red-500"></div>
                               <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                               <div className="w-3 h-3 rounded-full bg-green-500"></div>
                             </div>
-                            <div className="text-sm text-gray-400">solution.c</div>
+                            <div className="text-sm text-blue-600">solution.c</div>
                           </div>
-                          <pre className="p-6 text-sm text-green-300 font-mono overflow-x-auto">
+                          <pre className="p-6 text-sm text-cyan-800 font-mono overflow-x-auto">
                             {problem.code}
                           </pre>
                           <button
                             onClick={() => navigator.clipboard.writeText(problem.code)}
-                            className="absolute top-1.5 right-1.5 p-2 rounded-md bg-gray-700 hover:bg-gray-600 text-purple-300 text-lg"
+                            className="absolute top-1.5 right-1.5 p-2 rounded-md bg-blue-100 hover:bg-blue-200 text-blue-600 text-lg"
                           >
                             <FiClipboard />
                           </button>
                         </div>
 
-                        <div className="bg-gray-900/80 p-6 rounded-xl">
-                          <span className="text-indigo-200 text-sm font-medium">Output:</span>
-                          <pre className="text-gray-300 text-sm font-mono whitespace-pre-wrap mt-4">
+                        <div className="bg-white p-6 rounded-xl border border-blue-200">
+                          <span className="text-blue-600 text-sm font-medium">Output:</span>
+                          <pre className="text-blue-700 text-sm font-mono whitespace-pre-wrap mt-4">
                             {problem.output}
                           </pre>
                         </div>
@@ -346,24 +357,24 @@ export default function CLabsPage() {
               <motion.div
                 initial={{ scale: 0.9 }}
                 animate={{ scale: 1 }}
-                className="bg-gray-800 p-6 rounded-xl w-full max-w-2xl mx-4 max-h-[70vh] overflow-y-auto"
+                className="bg-white p-6 rounded-xl w-full max-w-2xl mx-4 max-h-[70vh] overflow-y-auto border border-blue-200 shadow-xl"
               >
                 <div className="flex justify-between items-start mb-4">
-                  <h2 className="text-2xl font-bold flex items-center gap-2">
-                    <FiLock className="text-purple-400" /> Admin Panel
+                  <h2 className="text-2xl font-bold flex items-center gap-2 text-blue-800">
+                    <FiLock className="text-cyan-600" /> Admin Panel
                   </h2>
                   <button
                     onClick={handleCloseAdminPanel}
-                    className="p-2 hover:bg-gray-700 rounded-full"
+                    className="p-2 hover:bg-blue-50 rounded-full"
                   >
-                    <FiX className="text-xl" />
+                    <FiX className="text-xl text-blue-600" />
                   </button>
                 </div>
 
                 {!pinVerified ? (
                   <form onSubmit={handlePinSubmit} className="space-y-6">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-purple-300">
+                      <label className="text-sm font-medium text-blue-600">
                         Enter 4-digit Admin PIN
                       </label>
                       <input
@@ -375,7 +386,7 @@ export default function CLabsPage() {
                             .slice(0, 4);
                           setPin(filteredValue);
                         }}
-                        className="w-full p-2 bg-gray-700 rounded text-center text-2xl font-mono tracking-[0.5em]"
+                        className="w-full p-2 bg-blue-50 rounded text-center text-2xl font-mono tracking-[0.5em] text-blue-800"
                         placeholder="••••"
                         inputMode="numeric"
                         pattern="\d{4}"
@@ -383,7 +394,7 @@ export default function CLabsPage() {
                     </div>
                     <button
                       type="submit"
-                      className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 rounded-lg font-medium"
+                      className="w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white rounded-lg font-medium shadow-md"
                     >
                       Verify PIN
                     </button>
@@ -391,118 +402,118 @@ export default function CLabsPage() {
                 ) : (
                   <>
                     <form onSubmit={handleSubmit} className="space-y-6">
-  <div className="space-y-2">
-    <label className="text-sm font-medium text-purple-300">Title</label>
-    <input
-      placeholder="Lab Assignment Title"
-      value={formData.title}
-      onChange={(e) => setFormData({...formData, title: e.target.value})}
-      className="w-full p-2 bg-gray-700 rounded text-indigo-100 focus:ring-2 focus:ring-purple-400"
-    />
-  </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-blue-600">Title</label>
+                        <input
+                          placeholder="Lab Assignment Title"
+                          value={formData.title}
+                          onChange={(e) => setFormData({...formData, title: e.target.value})}
+                          className="w-full p-2 bg-blue-50 rounded text-blue-800 focus:ring-2 focus:ring-cyan-400 border border-blue-200"
+                        />
+                      </div>
 
-  <div className="space-y-2">
-    <label className="text-sm font-medium text-purple-300">Icon</label>
-    <select
-      value={formData.icon}
-      onChange={(e) => setFormData({...formData, icon: e.target.value})}
-      className="w-full p-2 bg-gray-700 rounded text-indigo-100 focus:ring-2 focus:ring-purple-400"
-    >
-      {Object.keys(iconComponents).map(icon => (
-        <option key={icon} value={icon} className="bg-gray-800">
-          {icon}
-        </option>
-      ))}
-    </select>
-  </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-blue-600">Icon</label>
+                        <select
+                          value={formData.icon}
+                          onChange={(e) => setFormData({...formData, icon: e.target.value})}
+                          className="w-full p-2 bg-blue-50 rounded text-blue-800 focus:ring-2 focus:ring-cyan-400 border border-blue-200"
+                        >
+                          {Object.keys(iconComponents).map(icon => (
+                            <option key={icon} value={icon} className="bg-white">
+                              {icon}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
 
-  <div className="space-y-4">
-    {formData.problems.map((problem, index) => (
-      <div key={index} className="bg-gray-700/30 p-4 rounded-lg border border-indigo-700/30">
-        <div className="flex justify-between mb-2">
-          <span className="text-purple-300">Problem {index + 1}</span>
-          {index > 0 && (
-            <button
-              type="button"
-              onClick={() => setFormData(prev => ({
-                ...prev,
-                problems: prev.problems.filter((_, i) => i !== index)
-              }))}
-              className="text-red-400 hover:text-red-300"
-            >
-              <FiX />
-            </button>
-          )}
-        </div>
+                      <div className="space-y-4">
+                        {formData.problems.map((problem, index) => (
+                          <div key={index} className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                            <div className="flex justify-between mb-2">
+                              <span className="text-blue-600">Problem {index + 1}</span>
+                              {index > 0 && (
+                                <button
+                                  type="button"
+                                  onClick={() => setFormData(prev => ({
+                                    ...prev,
+                                    problems: prev.problems.filter((_, i) => i !== index)
+                                  }))}
+                                  className="text-red-500 hover:text-red-600"
+                                >
+                                  <FiX />
+                                </button>
+                              )}
+                            </div>
 
-        <div className="space-y-4">
-          <textarea
-            placeholder="Problem Statement"
-            value={problem.question}
-            onChange={(e) => handleProblemChange(index, 'question', e.target.value)}
-            className="w-full p-2 bg-gray-700 rounded text-indigo-100 focus:ring-2 focus:ring-purple-400"
-            rows="3"
-          />
-          <textarea
-            placeholder="Code Solution"
-            value={problem.code}
-            onChange={(e) => handleProblemChange(index, 'code', e.target.value)}
-            className="w-full p-2 bg-gray-700 rounded font-mono text-sm text-green-200 focus:ring-2 focus:ring-purple-400"
-            rows="6"
-          />
-          <textarea
-            placeholder="Expected Output"
-            value={problem.output}
-            onChange={(e) => handleProblemChange(index, 'output', e.target.value)}
-            className="w-full p-2 bg-gray-700 rounded text-indigo-100 focus:ring-2 focus:ring-purple-400"
-            rows="2"
-          />
-        </div>
-      </div>
-    ))}
+                            <div className="space-y-4">
+                              <textarea
+                                placeholder="Problem Statement"
+                                value={problem.question}
+                                onChange={(e) => handleProblemChange(index, 'question', e.target.value)}
+                                className="w-full p-2 bg-white rounded text-blue-800 focus:ring-2 focus:ring-cyan-400 border border-blue-200"
+                                rows="3"
+                              />
+                              <textarea
+                                placeholder="Code Solution"
+                                value={problem.code}
+                                onChange={(e) => handleProblemChange(index, 'code', e.target.value)}
+                                className="w-full p-2 bg-white rounded font-mono text-sm text-cyan-800 focus:ring-2 focus:ring-cyan-400 border border-blue-200"
+                                rows="6"
+                              />
+                              <textarea
+                                placeholder="Expected Output"
+                                value={problem.output}
+                                onChange={(e) => handleProblemChange(index, 'output', e.target.value)}
+                                className="w-full p-2 bg-white rounded text-blue-800 focus:ring-2 focus:ring-cyan-400 border border-blue-200"
+                                rows="2"
+                              />
+                            </div>
+                          </div>
+                        ))}
 
-    <button
-      type="button"
-      onClick={addProblemField}
-      className="w-full py-2 bg-indigo-700/30 hover:bg-indigo-700/40 rounded text-purple-300 border border-indigo-700/50 transition-all"
-    >
-      <FiPlus className="inline mr-2" />
-      Add Another Problem
-    </button>
-  </div>
+                        <button
+                          type="button"
+                          onClick={addProblemField}
+                          className="w-full py-2 bg-blue-100 hover:bg-blue-200 rounded text-blue-600 border border-blue-300 transition-all flex items-center justify-center gap-2"
+                        >
+                          <FiPlus className="text-blue-600" />
+                          Add Another Problem
+                        </button>
+                      </div>
 
-  <div className="grid grid-cols-2 gap-4">
-    <button
-      type="submit"
-      className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg font-medium transition-colors"
-    >
-      Create Lab Assignment
-    </button>
-    <button
-      type="button"
-      onClick={handleCloseAdminPanel}
-      className="px-6 py-2 bg-red-600/80 hover:bg-red-700/80 rounded-lg font-medium transition-colors"
-    >
-      Cancel
-    </button>
-  </div>
-</form>
+                      <div className="grid grid-cols-2 gap-4">
+                        <button
+                          type="submit"
+                          className="px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white rounded-lg font-medium transition-colors shadow-md"
+                        >
+                          Create Lab Assignment
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleCloseAdminPanel}
+                          className="px-6 py-2 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-400 hover:to-pink-400 text-white rounded-lg font-medium transition-colors shadow-md"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </form>
 
                     {/* Existing assignments section */}
                     <div className="mt-8">
-                      <h3 className="text-lg font-semibold text-purple-300 mb-4">
+                      <h3 className="text-lg font-semibold text-blue-600 mb-4">
                         Manage Existing Assignments
                       </h3>
                       <div className="space-y-2">
                         {assignments.map(assignment => (
                           <div 
                             key={assignment._id}
-                            className="flex justify-between items-center bg-gray-700/30 p-3 rounded-lg"
+                            className="flex justify-between items-center bg-blue-50 p-3 rounded-lg border border-blue-200"
                           >
-                            <span className="text-indigo-200">{assignment.title}</span>
+                            <span className="text-blue-800">{assignment.title}</span>
                             <button
                               onClick={() => handleDelete(assignment._id)}
-                              className="p-2 text-red-400 hover:text-red-300"
+                              className="p-2 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-full"
                             >
                               <FiTrash2 />
                             </button>
@@ -517,14 +528,19 @@ export default function CLabsPage() {
           )}
         </AnimatePresence>
 
-       {/* Footer Note */}
-       <footer className="mt-16 border-t border-indigo-700/50 py-8">
-          <div className="container mx-auto px-4 text-center text-gray-400 text-sm">
+        {/* Footer Note */}
+        <motion.footer 
+          className="mt-16 border-t border-blue-200 py-8"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+        >
+          <div className="container mx-auto px-4 text-center text-blue-400 text-sm">
             <p>
               © {new Date().getFullYear()} C Programming Lab | Master Memory Management and System Programming
             </p>
           </div>
-        </footer>
+        </motion.footer>
       </div>
     </div>
   );

@@ -1,9 +1,7 @@
-// src/pages/CCompiler.jsx
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiTerminal, FiPlay, FiAlertCircle, FiHome, FiCpu } from 'react-icons/fi';
-
+import { FiTerminal, FiPlay, FiAlertCircle, FiHome, FiCpu, FiChevronRight } from 'react-icons/fi';
 
 export default function CompilerPage() {
   const [code, setCode] = useState(`#include <stdio.h>
@@ -89,41 +87,52 @@ int main() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-indigo-900 text-white">
-      {/* Circuit Board Background */}
-      <div className="fixed inset-0 overflow-hidden opacity-10">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTggMHY0TTggMTJ2NE0xNiA4aC00TTQgOGgtNE0xMiAxMmwyLTIgMiAyLTItMi0yIDJ6TTQgNGwyLTIgMiAyLTItMi0yIDJ6IiBzdHJva2U9IiMzMzMzMzMiIHN0cm9rZS13aWR0aD0iMSIvPjwvc3ZnPg==')]"></div>
-      </div>
-
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-cyan-50 text-blue-900">
       {/* Navigation */}
       <motion.nav
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="bg-gray-900/80 backdrop-blur-lg border-b border-indigo-700/50 p-4 sticky top-0 z-50"
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+        className="bg-white/80 backdrop-blur-lg border-b border-blue-200 p-4 sticky top-0 z-50 shadow-sm"
       >
         <div className="container mx-auto flex justify-between items-center">
-          <motion.div whileHover={{ scale: 1.03 }}>
+          <motion.div 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
             <Link to="/" className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-600">
+              <motion.div 
+                animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="p-2 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500 shadow-md"
+              >
                 <FiTerminal className="text-xl text-white" />
-              </div>
-              <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 to-purple-200">
+              </motion.div>
+              <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 to-blue-600">
                 C System Compiler
               </h1>
             </Link>
           </motion.div>
           
-          <div className="flex gap-4">
-            <motion.div whileHover={{ y: -2 }}>
-              <Link
-                to="/"
-                className="px-4 py-2 rounded-lg bg-gray-800/50 hover:bg-gray-700/40 border border-indigo-700 flex items-center gap-2"
+          <motion.div 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Link
+              to="/"
+              className="px-4 py-2 rounded-lg bg-white hover:bg-blue-50 border border-blue-200 flex items-center gap-2 transition-all duration-300 hover:shadow-md text-blue-700"
+            >
+              <FiHome className="text-cyan-600" />
+              <span>Home</span>
+              <motion.span
+                animate={{ x: [0, 5, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="text-blue-500"
               >
-                <FiHome className="text-indigo-300" />
-                Home
-              </Link>
-            </motion.div>
-          </div>
+                <FiChevronRight />
+              </motion.span>
+            </Link>
+          </motion.div>
         </div>
       </motion.nav>
 
@@ -135,34 +144,54 @@ int main() {
           className="grid grid-cols-1 lg:grid-cols-2 gap-8"
         >
           {/* Code Editor */}
-          <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg border-2 border-indigo-700/50 shadow-xl">
-            <div className="flex items-center bg-gray-900/80 px-4 py-3 border-b border-indigo-700/50">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-white rounded-xl border border-blue-200 shadow-lg overflow-hidden"
+          >
+            <div className="flex items-center justify-between bg-blue-50 px-4 py-3 border-b border-blue-200">
               <div className="flex items-center gap-3">
-                <FiCpu className="text-indigo-400" />
-                <span className="text-sm font-mono text-gray-300">system_code.c</span>
+                <motion.div 
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  <FiCpu className="text-cyan-600" />
+                </motion.div>
+                <span className="text-sm font-mono text-blue-600">system_code.c</span>
+              </div>
+              <div className="flex gap-2">
+                <div className="w-3 h-3 rounded-full bg-cyan-400"></div>
+                <div className="w-3 h-3 rounded-full bg-blue-400"></div>
+                <div className="w-3 h-3 rounded-full bg-indigo-400"></div>
               </div>
             </div>
             <textarea
               value={code}
               onChange={(e) => setCode(e.target.value)}
-              className="w-full h-96 bg-gray-900/20 p-6 text-green-300 font-mono text-sm focus:outline-none resize-none"
+              className="w-full h-96 bg-blue-50 p-6 text-cyan-800 font-mono text-sm focus:outline-none resize-none"
               spellCheck="false"
             />
-          </div>
+          </motion.div>
 
           {/* Output Panel */}
-          <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg border-2 border-indigo-700/50 shadow-xl">
-            <div className="flex items-center justify-between bg-gray-900/80 px-4 py-3 border-b border-indigo-700/50">
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-white rounded-xl border border-blue-200 shadow-lg overflow-hidden"
+          >
+            <div className="flex items-center justify-between bg-blue-50 px-4 py-3 border-b border-blue-200">
               <div className="flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
-                <span className="text-sm font-mono text-gray-300">system_output</span>
+                <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
+                <span className="text-sm font-mono text-blue-600">system_output</span>
               </div>
               <motion.button
                 onClick={compileCode}
                 disabled={isLoading}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-4 py-2 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-sm font-medium flex items-center gap-2 disabled:opacity-50"
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white text-sm font-medium flex items-center gap-2 disabled:opacity-50 shadow-md"
               >
                 {isLoading ? (
                   <div className="w-4 h-4 border-2 border-white/50 border-t-transparent rounded-full animate-spin" />
@@ -179,7 +208,7 @@ int main() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="p-6 text-red-400 bg-red-900/20 rounded-b-lg"
+                  className="p-6 text-red-600 bg-red-50 rounded-b-lg"
                 >
                   <div className="flex items-center gap-3">
                     <FiAlertCircle className="text-xl" />
@@ -190,51 +219,57 @@ int main() {
                 <motion.pre
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="p-6 text-gray-300 font-mono text-sm whitespace-pre-wrap h-96 overflow-y-auto"
+                  className="p-6 text-blue-700 font-mono text-sm whitespace-pre-wrap h-96 overflow-y-auto"
                 >
                   {isLoading ? (
-                    <span className="text-indigo-400">[SYSTEM] Compiling kernel module...</span>
+                    <span className="text-cyan-600">[SYSTEM] Compiling kernel module...</span>
                   ) : output || 'Ready for low-level execution'}
                 </motion.pre>
               )}
             </AnimatePresence>
-          </div>
+          </motion.div>
         </motion.div>
 
         {/* Hardware Panel */}
         <motion.div 
-          className="mt-8 bg-gray-800/50 rounded-lg p-4 border border-indigo-700/50"
+          className="mt-8 bg-white rounded-xl p-6 border border-blue-200 shadow-lg"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
         >
           <div className="flex items-center gap-3 mb-4">
-            <FiCpu className="text-indigo-400" />
-            <h3 className="font-mono text-gray-300">Memory Overview</h3>
+            <FiCpu className="text-cyan-600 text-xl" />
+            <h3 className="font-medium text-blue-800">Memory Overview</h3>
           </div>
           <div className="grid grid-cols-3 gap-4 text-xs font-mono">
-            <div className="p-2 bg-gray-900/50 rounded">
-              <div className="text-indigo-400">Stack</div>
-              <div className="text-gray-400">0x7ffd3a...</div>
+            <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+              <div className="text-cyan-600 font-medium">Stack</div>
+              <div className="text-blue-400">0x7ffd3a...</div>
             </div>
-            <div className="p-2 bg-gray-900/50 rounded">
-              <div className="text-indigo-400">Heap</div>
-              <div className="text-gray-400">0x55b1b2...</div>
+            <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+              <div className="text-blue-600 font-medium">Heap</div>
+              <div className="text-blue-400">0x55b1b2...</div>
             </div>
-            <div className="p-2 bg-gray-900/50 rounded">
-              <div className="text-indigo-400">Registers</div>
-              <div className="text-gray-400">RAX: 0x0</div>
+            <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+              <div className="text-indigo-600 font-medium">Registers</div>
+              <div className="text-blue-400">RAX: 0x0</div>
             </div>
           </div>
         </motion.div>
 
         {/* Footer Note */}
-        <footer className="mt-16 border-t border-indigo-700/50 py-8">
-          <div className="container mx-auto px-4 text-center text-gray-400 text-sm">
+        <motion.footer 
+          className="mt-16 border-t border-blue-200 py-8"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+        >
+          <div className="container mx-auto px-4 text-center text-blue-400 text-sm">
             <p>
               © {new Date().getFullYear()} C System Lab | Direct Hardware Access • Memory Management • Kernel-level Operations
             </p>
           </div>
-        </footer>
+        </motion.footer>
       </div>
     </div>
   );

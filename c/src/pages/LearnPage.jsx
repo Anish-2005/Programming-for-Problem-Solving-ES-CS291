@@ -1,6 +1,6 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { FiCode, FiBookOpen, FiCpu, FiDatabase, FiSave, FiTerminal, FiHome,FiChip } from 'react-icons/fi';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiCode, FiBookOpen, FiCpu, FiDatabase, FiSave, FiTerminal, FiHome,FiChevronRight } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 
 const concepts = [
@@ -185,192 +185,284 @@ int main() {
 ];
 
 const LearnPage = () => {
+    const [activeConcept, setActiveConcept] = React.useState(0);
+
+    React.useEffect(() => {
+        const interval = setInterval(() => {
+            setActiveConcept((prev) => (prev + 1) % concepts.length);
+        }, 5000);
+        return () => clearInterval(interval);
+    }, []);
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 to-indigo-900 text-white">
-          {/* Circuit Board Background */}
-          <div className="fixed inset-0 overflow-hidden opacity-10">
-            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTggMHY0TTggMTJ2NE0xNiA4aC00TTQgOGgtNE0xMiAxMmwyLTIgMiAyLTItMi0yIDJ6TTQgNGwyLTIgMiAyLTItMi0yIDJ6IiBzdHJva2U9IiMzMzMzMzMiIHN0cm9rZS13aWR0aD0iMSIvPjwvc3ZnPg==')]"></div>
-          </div>
-    
-          {/* Navigation */}
-          <motion.nav
-            initial={{ y: -100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            className="bg-gray-900/80 backdrop-blur-lg border-b border-indigo-700/50 p-4 sticky top-0 z-50"
-          >
-            <div className="container mx-auto flex justify-between items-center">
-              <motion.div whileHover={{ scale: 1.05 }} className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-600">
-                  <FiTerminal className="text-xl text-white" />
-                </div>
-                <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 to-purple-200">
-                  C Programming Lab
-                </h1>
-              </motion.div>
-              
-              <motion.div whileHover={{ y: -2 }}>
-                <Link to="/" className="px-4 py-2 rounded-lg bg-gray-800/50 hover:bg-gray-700/40 border border-indigo-700 flex items-center gap-2">
-                  <FiHome className="text-indigo-300" />
-                  Home
-                </Link>
-              </motion.div>
-            </div>
-          </motion.nav>
-    
-          {/* Main Content */}
-          <div className="container mx-auto py-12 px-4 relative z-10">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-cyan-50 text-blue-900">
+            {/* Navigation */}
+            <motion.nav
+                initial={{ y: -100, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                className="bg-white/80 backdrop-blur-lg border-b border-blue-200 p-4 sticky top-0 z-50 shadow-sm"
             >
-              {/* Code Concepts Panel */}
-              <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg border-2 border-indigo-700/50 shadow-xl">
-                <div className="flex items-center bg-gray-900/80 px-4 py-3 border-b border-indigo-700/50">
-                  <div className="flex items-center gap-3">
-                    <FiCpu className="text-indigo-400" />
-                    <span className="text-sm font-mono text-gray-300">core_concepts.c</span>
-                  </div>
-                </div>
-                <div className="p-6 space-y-8 h-[600px] overflow-y-auto">
-                  {concepts.map((concept, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="bg-gray-900/30 rounded-xl p-4 border border-indigo-700/30"
+                <div className="container mx-auto flex justify-between items-center">
+                    <motion.div 
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                     >
-                      <div className="flex items-center gap-3 mb-4">
-                        <FiCode className="text-indigo-400 text-xl" />
-                        <h2 className="text-xl font-semibold text-indigo-100">
-                          {concept.title}
-                        </h2>
-                      </div>
-                      <pre className="p-4 rounded-lg bg-gray-900/50 overflow-x-auto text-sm font-mono text-green-300">
-                        {concept.code}
-                      </pre>
-                      <div className="mt-4 p-3 bg-indigo-900/20 rounded-lg">
-                        <p className="text-indigo-300 text-sm">{concept.explanation}</p>
-                      </div>
+                        <Link to="/" className="flex items-center gap-3">
+                            <motion.div 
+                                animate={{ rotate: [0, 10, -10, 0] }}
+                                transition={{ duration: 2, repeat: Infinity }}
+                                className="p-2 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500 shadow-md"
+                            >
+                                <FiTerminal className="text-xl text-white" />
+                            </motion.div>
+                            <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 to-blue-600">
+                                C Programming Lab
+                            </h1>
+                        </Link>
                     </motion.div>
-                  ))}
+                    
+                    <motion.div 
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        <Link
+                            to="/"
+                            className="px-4 py-2 rounded-lg bg-white hover:bg-blue-50 border border-blue-200 flex items-center gap-2 transition-all duration-300 hover:shadow-md text-blue-700"
+                        >
+                            <FiHome className="text-cyan-600" />
+                            <span>Home</span>
+                            <motion.span
+                                animate={{ x: [0, 5, 0] }}
+                                transition={{ duration: 2, repeat: Infinity }}
+                                className="text-blue-500"
+                            >
+                                <FiChevronRight />
+                            </motion.span>
+                        </Link>
+                    </motion.div>
                 </div>
-              </div>
-    
-              {/* Learning Resources Panel */}
-              <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg border-2 border-indigo-700/50 shadow-xl">
-                <div className="flex items-center justify-between bg-gray-900/80 px-4 py-3 border-b border-indigo-700/50">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
-                    <span className="text-sm font-mono text-gray-300">learning_resources</span>
-                  </div>
+            </motion.nav>
+
+            {/* Main Content */}
+            <div className="container mx-auto py-12 px-4 relative z-10">
+                {/* Header */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-center mb-12"
+                >
+                    <motion.h1 
+                        className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 to-blue-600"
+                        whileInView={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0, y: 20 }}
+                        viewport={{ once: true }}
+                    >
+                        C Programming Concepts
+                    </motion.h1>
+                    <motion.p 
+                        className="text-blue-600 max-w-2xl mx-auto text-lg"
+                        whileInView={{ opacity: 1 }}
+                        initial={{ opacity: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.2 }}
+                    >
+                        Master core concepts with interactive examples and detailed explanations
+                    </motion.p>
+                </motion.div>
+
+                {/* Main Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+                    {/* Code Concepts Panel */}
+                    <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.4 }}
+                        className="bg-white rounded-xl border border-blue-200 shadow-lg overflow-hidden"
+                    >
+                        <div className="flex items-center justify-between bg-blue-50 px-4 py-3 border-b border-blue-200">
+                            <div className="flex items-center gap-3">
+                                <motion.div 
+                                    animate={{ scale: [1, 1.2, 1] }}
+                                    transition={{ duration: 2, repeat: Infinity }}
+                                >
+                                    <FiCode className="text-cyan-600" />
+                                </motion.div>
+                                <span className="text-sm font-mono text-blue-600">core_concepts.c</span>
+                            </div>
+                            <div className="flex gap-2">
+                                <div className="w-3 h-3 rounded-full bg-cyan-400"></div>
+                                <div className="w-3 h-3 rounded-full bg-blue-400"></div>
+                                <div className="w-3 h-3 rounded-full bg-indigo-400"></div>
+                            </div>
+                        </div>
+                        
+                        <div className="relative h-[600px] overflow-hidden">
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={activeConcept}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -20 }}
+                                    transition={{ duration: 0.5 }}
+                                    className="absolute inset-0 p-6 overflow-y-auto"
+                                >
+                                    <div className="mb-6">
+                                        <div className="flex items-center gap-3 mb-4">
+                                            <FiCode className="text-cyan-600 text-xl" />
+                                            <h2 className="text-xl font-bold text-blue-800">
+                                                {concepts[activeConcept].title}
+                                            </h2>
+                                        </div>
+                                        <pre className="p-4 rounded-lg bg-blue-50 overflow-x-auto text-sm font-mono text-cyan-800">
+                                            {concepts[activeConcept].code}
+                                        </pre>
+                                    </div>
+                                    <div className="p-4 bg-cyan-50 rounded-lg border border-cyan-200">
+                                        <p className="text-blue-700">{concepts[activeConcept].explanation}</p>
+                                    </div>
+                                </motion.div>
+                            </AnimatePresence>
+                            
+                            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-white to-transparent p-4 flex justify-center gap-2">
+                                {concepts.map((_, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => setActiveConcept(index)}
+                                        className={`w-3 h-3 rounded-full transition-all ${activeConcept === index ? 'bg-cyan-600 w-6' : 'bg-blue-300'}`}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    </motion.div>
+
+                    {/* Learning Resources Panel */}
+                    <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.4 }}
+                        className="space-y-6"
+                    >
+                        {/* Learning Path Section */}
+                        <motion.div 
+                            whileHover={{ y: -5 }}
+                            className="bg-white rounded-xl border border-blue-200 p-6 shadow-lg overflow-hidden relative"
+                        >
+                            <div className="absolute -right-10 -top-10 w-32 h-32 bg-cyan-200 rounded-full opacity-20"></div>
+                            <div className="relative z-10">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <FiBookOpen className="text-cyan-600 text-2xl" />
+                                    <h2 className="text-xl font-bold text-blue-800">Learning Path</h2>
+                                </div>
+                                <div className="grid gap-4 md:grid-cols-2">
+                                    <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                        <h3 className="text-lg font-medium mb-2 text-blue-700">
+                                            <FiCpu className="inline mr-2 text-cyan-600" />
+                                            System Programming
+                                        </h3>
+                                        <ul className="list-disc list-inside text-blue-600 space-y-2">
+                                            <li>Memory Management</li>
+                                            <li>Process Scheduling</li>
+                                            <li>Device Drivers</li>
+                                        </ul>
+                                    </div>
+                                    <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                        <h3 className="text-lg font-medium mb-2 text-blue-700">
+                                            <FiDatabase className="inline mr-2 text-blue-600" />
+                                            Data Structures
+                                        </h3>
+                                        <ul className="list-disc list-inside text-blue-600 space-y-2">
+                                            <li>Linked Lists</li>
+                                            <li>Binary Trees</li>
+                                            <li>Hash Tables</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+
+                        {/* Best Practices Section */}
+                        <motion.div 
+                            whileHover={{ y: -5 }}
+                            className="bg-white rounded-xl border border-blue-200 p-6 shadow-lg overflow-hidden relative"
+                        >
+                            <div className="absolute -left-10 -bottom-10 w-32 h-32 bg-blue-200 rounded-full opacity-20"></div>
+                            <div className="relative z-10">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <FiSave className="text-blue-600 text-2xl" />
+                                    <h2 className="text-xl font-bold text-blue-800">Best Practices</h2>
+                                </div>
+                                <div className="grid gap-4">
+                                    <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                        <h3 className="text-lg font-medium mb-2 text-blue-700">
+                                            Memory Safety
+                                        </h3>
+                                        <ul className="list-disc list-inside text-blue-600 space-y-2">
+                                            <li>Always free allocated memory</li>
+                                            <li>Check pointer validity</li>
+                                            <li>Use valgrind for leaks</li>
+                                        </ul>
+                                    </div>
+                                    <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                        <h3 className="text-lg font-medium mb-2 text-blue-700">
+                                            Optimization
+                                        </h3>
+                                        <ul className="list-disc list-inside text-blue-600 space-y-2">
+                                            <li>Cache-friendly patterns</li>
+                                            <li>Compiler flags (-O2)</li>
+                                            <li>Profile before optimizing</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+
+                        {/* Memory Overview Panel */}
+                        <motion.div 
+                            whileHover={{ y: -5 }}
+                            className="bg-white rounded-xl border border-blue-200 p-6 shadow-lg overflow-hidden relative"
+                        >
+                            <div className="absolute -right-10 -bottom-10 w-32 h-32 bg-indigo-200 rounded-full opacity-20"></div>
+                            <div className="relative z-10">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <FiCpu className="text-indigo-600 text-2xl" />
+                                    <h2 className="text-xl font-bold text-blue-800">Memory Overview</h2>
+                                </div>
+                                <div className="grid grid-cols-3 gap-4 text-xs font-mono">
+                                    <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                                        <div className="text-cyan-600 font-medium">Stack</div>
+                                        <div className="text-blue-400">0x7ffd3a...</div>
+                                    </div>
+                                    <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                                        <div className="text-blue-600 font-medium">Heap</div>
+                                        <div className="text-blue-400">0x55b1b2...</div>
+                                    </div>
+                                    <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                                        <div className="text-indigo-600 font-medium">Registers</div>
+                                        <div className="text-blue-400">RAX: 0x0</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
                 </div>
-                
-                <div className="p-6 space-y-6">
-                  {/* Learning Path Section */}
-                  <div className="bg-gray-900/30 rounded-xl p-4 border border-indigo-700/30">
-                    <div className="flex items-center gap-3 mb-4">
-                      <FiBookOpen className="text-indigo-400 text-xl" />
-                      <h2 className="text-xl font-semibold text-indigo-100">
-                        Learning Path
-                      </h2>
+
+                {/* Footer */}
+                <motion.footer 
+                    className="border-t border-blue-200 py-8"
+                    whileInView={{ opacity: 1 }}
+                    initial={{ opacity: 0 }}
+                    viewport={{ once: true }}
+                >
+                    <div className="container mx-auto px-4 text-center text-blue-400 text-sm">
+                        <p>
+                            © {new Date().getFullYear()} C Programming Lab | Master Memory Management and System Programming
+                        </p>
                     </div>
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <div className="p-3 bg-gray-800/50 rounded-lg">
-                        <h3 className="text-lg font-medium mb-2 text-indigo-200">
-                          <FiCpu className="inline mr-2" />
-                          System Programming
-                        </h3>
-                        <ul className="list-disc list-inside text-indigo-300 space-y-2">
-                          <li>Memory Management</li>
-                          <li>Process Scheduling</li>
-                          <li>Device Drivers</li>
-                        </ul>
-                      </div>
-                      <div className="p-3 bg-gray-800/50 rounded-lg">
-                        <h3 className="text-lg font-medium mb-2 text-indigo-200">
-                          <FiDatabase className="inline mr-2" />
-                          Data Structures
-                        </h3>
-                        <ul className="list-disc list-inside text-indigo-300 space-y-2">
-                          <li>Linked Lists</li>
-                          <li>Binary Trees</li>
-                          <li>Hash Tables</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-    
-                  {/* Best Practices Section */}
-                  <div className="bg-gray-900/30 rounded-xl p-4 border border-indigo-700/30">
-                    <div className="flex items-center gap-3 mb-4">
-                      <FiSave className="text-indigo-400 text-xl" />
-                      <h2 className="text-xl font-semibold text-indigo-100">
-                        Best Practices
-                      </h2>
-                    </div>
-                    <div className="grid gap-4">
-                      <div className="p-3 bg-gray-800/50 rounded-lg">
-                        <h3 className="text-lg font-medium mb-2 text-indigo-200">
-                          Memory Safety
-                        </h3>
-                        <ul className="list-disc list-inside text-indigo-300 space-y-2">
-                          <li>Always free allocated memory</li>
-                          <li>Check pointer validity</li>
-                          <li>Use valgrind for leaks</li>
-                        </ul>
-                      </div>
-                      <div className="p-3 bg-gray-800/50 rounded-lg">
-                        <h3 className="text-lg font-medium mb-2 text-indigo-200">
-                          Optimization
-                        </h3>
-                        <ul className="list-disc list-inside text-indigo-300 space-y-2">
-                          <li>Cache-friendly patterns</li>
-                          <li>Compiler flags (-O2)</li>
-                          <li>Profile before optimizing</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-    
-                  {/* Hardware Panel */}
-                  <div className="bg-gray-900/30 rounded-xl p-4 border border-indigo-700/30">
-                    <div className="flex items-center gap-3 mb-4">
-                      <FiCpu className="text-indigo-400 text-xl" />
-                      <h2 className="text-xl font-semibold text-indigo-100">
-                        Memory Overview
-                      </h2>
-                    </div>
-                    <div className="grid grid-cols-3 gap-4 text-xs font-mono">
-                      <div className="p-2 bg-gray-800/50 rounded">
-                        <div className="text-indigo-400">Stack</div>
-                        <div className="text-gray-400">0x7ffd3a...</div>
-                      </div>
-                      <div className="p-2 bg-gray-800/50 rounded">
-                        <div className="text-indigo-400">Heap</div>
-                        <div className="text-gray-400">0x55b1b2...</div>
-                      </div>
-                      <div className="p-2 bg-gray-800/50 rounded">
-                        <div className="text-indigo-400">Registers</div>
-                        <div className="text-gray-400">RAX: 0x0</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-    
-            {/* Footer */}
-            <footer className="mt-16 border-t border-indigo-700/50 py-8">
-              <div className="container mx-auto px-4 text-center text-gray-400 text-sm">
-                <p>
-                  © {new Date().getFullYear()} C Programming Lab | Master Memory Management and System Programming
-                </p>
-              </div>
-            </footer>
-          </div>
+                </motion.footer>
+            </div>
         </div>
-      );
-    };
-    
-    export default LearnPage;
+    );
+};
+
+export default LearnPage;
